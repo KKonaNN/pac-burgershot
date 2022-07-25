@@ -36,12 +36,26 @@ AddEventHandler('pepe-burgershot:server:finish:burger', function(BurgerName)
 
 end)
 
+function CheckPosition(source)
+    local Player = Framework.Functions.GetPlayer(source)
+    local x, y, z = Player.Functions.GetCoords()
+    local Distance = GetDistanceBetweenCoords(x, y, z, Config.Intercom.Worker.X, Config.Intercom.Worker.Y, Config.Intercom.Worker.Z, true)
+    if Distance < 15 then
+        return true
+    else
+        return false
+    end
+end
+
 RegisterServerEvent('pepe-burgershot:server:finish:fries')
 AddEventHandler('pepe-burgershot:server:finish:fries', function()
     local src = source
     local Player = Framework.Functions.GetPlayer(src)
     if Player.PlayerData.job.name ~= 'burger' then
         return -- Not a burger job player can't finish a burger (: BAN HIM
+    end
+    if CheckPosition(src) == false then
+        return -- Not in the right position
     end
     if Player.Functions.RemoveItem('burger-potato', 1) then
         Player.Functions.AddItem('burger-fries', math.random(3, 5))
@@ -54,7 +68,11 @@ AddEventHandler('pepe-burgershot:server:finish:patty', function()
     local Player = Framework.Functions.GetPlayer(src)
     if Player.PlayerData.job.name ~= 'burger' then
         return
-    elseif Player.Functions.RemoveItem('burger-raw', 1) then
+    end
+    if CheckPosition(src) == false then
+        return -- Not in the right position
+    end
+    if Player.Functions.RemoveItem('burger-raw', 1) then
         Player.Functions.AddItem('burger-meat', 1)
     end
 end)
@@ -65,6 +83,9 @@ AddEventHandler('pepe-burgershot:server:finish:drink', function(DrinkName)
     local Player = Framework.Functions.GetPlayer(src)
     if Player.PlayerData.job.name ~= 'burger' then
         return
+    end
+    if CheckPosition(src) == false then
+        return -- Not in the right position
     end
     for k, v in pairs(Config.Drinks) do
         if v == DrinkName then
