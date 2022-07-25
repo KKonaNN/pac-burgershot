@@ -22,6 +22,9 @@ RegisterServerEvent('pepe-burgershot:server:finish:burger')
 AddEventHandler('pepe-burgershot:server:finish:burger', function(BurgerName)
     local src = source
     local Player = Framework.Functions.GetPlayer(src)
+    if Player.PlayerData.job.name ~= 'burger' then
+        return -- Not a burger job player can't finish a burger (: BAN HIM
+    end
     for k, v in pairs(Config.BurgerItems) do
         Player.Functions.RemoveItem(v, 1, false, true)
         if v == BurgerName then
@@ -37,6 +40,9 @@ RegisterServerEvent('pepe-burgershot:server:finish:fries')
 AddEventHandler('pepe-burgershot:server:finish:fries', function()
     local src = source
     local Player = Framework.Functions.GetPlayer(src)
+    if Player.PlayerData.job.name ~= 'burger' then
+        return -- Not a burger job player can't finish a burger (: BAN HIM
+    end
     if Player.Functions.RemoveItem('burger-potato', 1) then
         Player.Functions.AddItem('burger-fries', math.random(3, 5))
     end
@@ -46,7 +52,9 @@ RegisterServerEvent('pepe-burgershot:server:finish:patty')
 AddEventHandler('pepe-burgershot:server:finish:patty', function()
     local src = source
     local Player = Framework.Functions.GetPlayer(src)
-    if Player.Functions.RemoveItem('burger-raw', 1) then
+    if Player.PlayerData.job.name ~= 'burger' then
+        return
+    elseif Player.Functions.RemoveItem('burger-raw', 1) then
         Player.Functions.AddItem('burger-meat', 1)
     end
 end)
@@ -55,6 +63,9 @@ RegisterServerEvent('pepe-burgershot:server:finish:drink')
 AddEventHandler('pepe-burgershot:server:finish:drink', function(DrinkName)
     local src = source
     local Player = Framework.Functions.GetPlayer(src)
+    if Player.PlayerData.job.name ~= 'burger' then
+        return
+    end
     for k, v in pairs(Config.Drinks) do
         if v == DrinkName then
             Player.Functions.AddItem(DrinkName, 1)
